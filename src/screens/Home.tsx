@@ -1,6 +1,7 @@
 import { SafeAreaView, StyleSheet, FlatList } from "react-native";
 import React from "react";
-import ProductCard, { SearchBar } from "../components/ProductCard";
+import ProductCard from "../components/ProductCard";
+import SearchBar from "../components/SearchBar";
 
 const products = [
   {
@@ -44,7 +45,10 @@ export default Home;
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
     flex: 1,
+    padding: 10,
+    alignItems: "center",
     backgroundColor: "#f0f0f0",
   },
 });

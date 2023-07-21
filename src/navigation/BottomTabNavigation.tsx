@@ -1,42 +1,13 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Account from "../screens/Account";
+import Cart from "../screens/Cart";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
-import Home from "./screens/Home";
-import Account from "./screens/Account";
-import Cart from "./screens/Cart";
 import { TouchableOpacity, Image } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProductSingleScreen from "./screens/ProductSingleScreen";
-import { StackNavigatorParamListType } from "./Types";
-import ProductFullImage from "./components/ProductFullImage";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import StackNavigation from "./StackNavigation";
 
-const Stack = createNativeStackNavigator<StackNavigatorParamListType>();
+const BottomTabNavigation = () => {
+  const Tab = createBottomTabNavigator();
 
-const Tab = createBottomTabNavigator();
-
-// here is the stack navigator
-
-const ProductStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ProductSingleScreen"
-        component={ProductSingleScreen}
-      />
-      <Stack.Screen name="ProductFullImage" component={ProductFullImage} />
-    </Stack.Navigator>
-  );
-};
-
-/* here is the parent bottom tab function */
-const TabGroup = () => {
-  /* here is the avatar function */
   const renderHeaderRight = () => {
     const avatarUrl =
       "https://aphrodite.gmanetwork.com/imagefiles/1000/1543821638_1647458010_12_ent.jpg";
@@ -50,7 +21,6 @@ const TabGroup = () => {
       </TouchableOpacity>
     );
   };
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -84,19 +54,11 @@ const TabGroup = () => {
         headerRight: () => renderHeaderRight(),
       })}
     >
-      <Tab.Screen name="ProductStack" component={ProductStack} />
+      <Tab.Screen name="ProductStack" component={StackNavigation} />
       <Tab.Screen name="Cart" component={Cart} />
       <Tab.Screen name="Account" component={Account} />
     </Tab.Navigator>
   );
 };
 
-const Navigation = () => {
-  return (
-    <NavigationContainer>
-      <TabGroup />
-    </NavigationContainer>
-  );
-};
-
-export default Navigation;
+export default BottomTabNavigation;

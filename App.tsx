@@ -1,5 +1,5 @@
-import Navigation from "./src/Navigation";
+import RootNavigation from "./src/navigation/RootNavigation";
 
 export default function App() {
-  return <Navigation />;
+  return <RootNavigation />;
 }

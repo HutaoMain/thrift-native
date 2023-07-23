@@ -1,33 +1,43 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
+// interfaces
 export interface ProductInterface {
-  id: number;
-  image: string;
+  id: string;
   name: string;
-  details: string;
-  price: string;
+  imageUrl: string;
+  description: string;
+  price: number;
+  quantity: number;
 }
 
+// types
 export type StackNavigatorParamListType = {
   Home: undefined;
-  ProductSingleScreen: {
-    id: number;
-    image: string;
+  Product: {
+    id: string;
     name: string;
-    details: string;
-    price: string;
+    imageUrl: string;
+    description: string;
+    price: number;
+    quantity: number;
   };
   ProductFullImage: {
     image: string;
   };
+  Address: undefined;
 };
 
 export type ProductStackProps = NativeStackScreenProps<
   StackNavigatorParamListType,
-  "ProductSingleScreen"
+  "Product"
 >;
 
 export type ProductFullImageStackProps = NativeStackScreenProps<
   StackNavigatorParamListType,
   "ProductFullImage"
 >;
+
+export type AuthStackNavigationType = {
+  Login: undefined;
+  Register: undefined;
+};

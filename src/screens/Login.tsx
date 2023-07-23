@@ -8,22 +8,45 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AuthStackNavigationType } from "../Types";
+import axios from "axios";
+import { API_URL } from "@env";
+import useAuthStore from "../zustand/AuthStore";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const navigation = useNavigation();
+  const setUser = useAuthStore((state) => state.setUser);
 
-  const handleLogin = () => {
-    // TODO: add your login logic here
-    Alert.alert("Login successful");
-    //   navigation.navigate('RegistrationScreen'); //TODO navigate to HomePage
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AuthStackNavigationType>>();
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_URL}/api/user/login`, {
+        email: email,
+        password: password,
+      });
+      setLoading(false);
+      setUser(email);
+      console.log(res.data);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  const handleGoToRegisterScreen = () => {
+    navigation.navigate("Register");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Happy Thrift</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -38,7 +61,16 @@ const Login = () => {
         secureTextEntry
       />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>
+          {loading ? "Logging in.." : "Login"}
+        </Text>
+      </TouchableOpacity>
+      <Text>or</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleGoToRegisterScreen}
+      >
+        <Text style={styles.buttonText}>No account yet? Click here</Text>
       </TouchableOpacity>
     </View>
   );
@@ -70,11 +102,13 @@ const styles = StyleSheet.create({
   button: {
     width: "80%",
     height: 40,
+    borderWidth: 1,
+    borderColor: "black",
     borderRadius: 10,
     marginVertical: 10,
   },
   buttonText: {
-    color: "#fff",
+    color: "black",
     textAlign: "center",
     lineHeight: 40,
     fontSize: 16,

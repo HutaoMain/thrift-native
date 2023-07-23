@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AuthStackNavigationType } from "../Types";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +17,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AuthStackNavigationType>>();
 
   const handleRegistration = () => {
     // TODO: add your registration logic here
@@ -25,6 +28,10 @@ const Register = () => {
     }
     Alert.alert("Registration successful");
     // TODO: navigate to homepage
+  };
+
+  const handleGoBackToLogin = () => {
+    navigation.navigate("Login");
   };
 
   return (
@@ -68,6 +75,9 @@ const Register = () => {
       >
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleGoBackToLogin}>
+        <Text style={styles.buttonText}>Go back to Login</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -98,6 +108,8 @@ const styles = StyleSheet.create({
   button: {
     width: "80%",
     height: 40,
+    borderWidth: 1,
+    borderColor: "black",
     borderRadius: 10,
     marginVertical: 10,
   },
@@ -106,9 +118,10 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: "#ccc",
+    borderColor: "#ccc",
   },
   buttonText: {
-    color: "#fff",
+    color: "black",
     textAlign: "center",
     lineHeight: 40,
     fontSize: 16,

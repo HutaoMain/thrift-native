@@ -1,44 +1,37 @@
 import { SafeAreaView, StyleSheet, FlatList } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
-
-const products = [
-  {
-    id: 1,
-    name: "Vintage denim jacket",
-    details: "sqsqsnqobsnoqjbsoqbnsoq",
-    price: "$25",
-    image:
-      "https://images.unsplash.com/photo-1516257984-b1b4d707412e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dmludGFnZSUyMGRlbmltJTIwamFja2V0fGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-  },
-  {
-    id: 2,
-    name: "Floral dress",
-    details: "sqsqsnqobsnoqjbsoqbnsoq",
-    price: "$15",
-    image:
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZmxvcmFsJTIwZHJlc3N8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-  },
-  {
-    id: 3,
-    name: "Leather boots",
-    details: "sqsqsnqobsnoqjbsoqbnsoq",
-    price: "$35",
-    image:
-      "https://i2.wp.com/thesimplegentleman.com/wp-content/uploads/2017/01/tsg-leather-boots-mens.jpg?fit=1920%2C1080",
-  },
-];
+import { useQuery } from "react-query";
+import { ProductInterface } from "../Types";
+import axios from "axios";
+import { API_URL } from "@env";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
+  const navigation = useNavigation();
+
+  const { data } = useQuery<ProductInterface[]>({
+    queryKey: ["Home"],
+    queryFn: () =>
+      axios.get(`${API_URL}/api/product/list`).then((res) => res.data),
+  });
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+    });
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <SearchBar />
       <FlatList
-        data={products}
+        style={styles.products}
+        data={data}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <ProductCard product={item} />}
-        numColumns={2}
+        numColumns={0}
       />
     </SafeAreaView>
   );
@@ -53,5 +46,8 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
     backgroundColor: "#ffff",
+  },
+  products: {
+    width: "100%",
   },
 });

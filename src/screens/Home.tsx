@@ -1,8 +1,8 @@
 import { SafeAreaView, StyleSheet, FlatList } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
-import { useQuery } from "react-query";
+
 import { ProductInterface } from "../Types";
 import axios from "axios";
 import { API_URL } from "@env";
@@ -11,11 +11,22 @@ import { useNavigation } from "@react-navigation/native";
 const Home = () => {
   const navigation = useNavigation();
 
-  const { data } = useQuery<ProductInterface[]>({
-    queryKey: ["Home"],
-    queryFn: () =>
-      axios.get(`${API_URL}/api/product/list`).then((res) => res.data),
-  });
+  const [filteredData, setFilteredData] = useState<ProductInterface[]>([]);
+  const [productData, setProductData] = useState<ProductInterface[]>([]);
+  const [category, setCategory] = useState<string | undefined>(undefined); // add a state for category
+  const [searchKeyword, setSearchKeyword] = useState<string>(""); // add a state for search keyword
+
+  useEffect(() => {
+    const fecthData = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/product/list`);
+        setProductData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fecthData();
+  }, [filteredData]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -23,16 +34,36 @@ const Home = () => {
     });
   }, []);
 
+  const handleFilter = (
+    category: string | undefined,
+    searchKeyword: string
+  ) => {
+    // update the category and searchKeyword states
+    setCategory(category);
+    setSearchKeyword(searchKeyword);
+  };
+
+  useEffect(() => {
+    // apply the same filter logic as in handleFilter
+    let filteredProducts = productData;
+    if (category) {
+      filteredProducts = filteredProducts?.filter(
+        (product) => product.categoryId === category
+      );
+    }
+    if (searchKeyword) {
+      filteredProducts = filteredProducts?.filter((product) =>
+        product.name.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    }
+    setFilteredData(filteredProducts || []);
+  }, [productData]);
   return (
     <SafeAreaView style={styles.container}>
-      <SearchBar />
-      <FlatList
-        style={styles.products}
-        data={data}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <ProductCard product={item} />}
-        numColumns={0}
-      />
+      <SearchBar onFilter={handleFilter} />
+      {filteredData?.map((item, key) => (
+        <ProductCard product={item} key={key} />
+      ))}
     </SafeAreaView>
   );
 };

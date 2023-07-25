@@ -5,14 +5,15 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "@env";
 import useAuthStore from "../zustand/AuthStore";
 import Toast from "react-native-toast-message";
+import { useQuery } from "react-query";
+import { UserAddressInterface } from "../Types";
 
 const Address = () => {
-  const [recipient, setRecipient] = useState<string>("");
   const [contactNumber, setContactNumber] = useState<string>("");
   const [barangay, setBarangay] = useState<string>("");
   const [street, setStreet] = useState<string>("");
@@ -21,6 +22,23 @@ const Address = () => {
   const [postalCode, setPostalCode] = useState<string>("");
 
   const user = useAuthStore((state) => state.user);
+
+  const { data } = useQuery<UserAddressInterface>({
+    queryKey: ["Address"],
+    queryFn: () =>
+      axios
+        .get(`${API_URL}/api/user-address/byEmail/${user}`)
+        .then((res) => res.data),
+  });
+
+  useEffect(() => {
+    setContactNumber(data?.contactNumber || "");
+    setBarangay(data?.barangay || "");
+    setStreet(data?.street || "");
+    setMunicipality(data?.municipality || "");
+    setCity(data?.city || "");
+    setPostalCode(data?.postalCode || "");
+  }, [data]);
 
   const handleSaveAddress = async () => {
     try {
@@ -57,13 +75,6 @@ const Address = () => {
           alignItems: "center",
         }}
       >
-        <TextInput
-          style={styles.input}
-          value={recipient}
-          onChangeText={(text) => setRecipient(text)}
-          placeholder="Recipient"
-        />
-
         <TextInput
           style={styles.input}
           value={contactNumber}

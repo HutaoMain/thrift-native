@@ -10,6 +10,9 @@ import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackNavigationType } from "../Types";
+import Toast from "react-native-toast-message";
+import axios from "axios";
+import { API_URL } from "@env";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -20,14 +23,31 @@ const Register = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackNavigationType>>();
 
-  const handleRegistration = () => {
-    // TODO: add your registration logic here
-    if (password !== confirmPassword) {
-      Alert.alert("Passwords do not match");
-      return;
+  const handleRegistration = async () => {
+    try {
+      if (password !== confirmPassword) {
+        Toast.show({
+          type: "error",
+          text1: `Password do not match.`,
+        });
+        return;
+      }
+
+      await axios.post(`${API_URL}/api/user/register`, {
+        email: email,
+        name: name,
+        password: password,
+      });
+      Toast.show({
+        type: "success",
+        text1: `Successfully registered your account.`,
+      });
+      setTimeout(() => {
+        navigation.navigate("Login");
+      }, 2000);
+    } catch (error) {
+      console.log(error);
     }
-    Alert.alert("Registration successful");
-    // TODO: navigate to homepage
   };
 
   const handleGoBackToLogin = () => {

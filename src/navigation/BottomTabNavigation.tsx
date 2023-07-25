@@ -1,16 +1,16 @@
 import Account from "../screens/Account";
 import Cart from "../screens/Cart";
 import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeStackNavigation from "./HomeStackNavigation";
+import Wishlist from "../screens/Wishlist";
 
 const BottomTabNavigation = () => {
   const Tab = createBottomTabNavigator();
 
   // const renderHeaderRight = () => {
   //   const avatarUrl =
-  //     "https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png";
+  //     "https://images.gmanews.tv/webpics/2021/01/Screen_Shot_2021-01-19_at_7_2021_01_19_19_52_25.png";
 
   //   return (
   //     <TouchableOpacity onPress={() => console.log("Avatar pressed")}>
@@ -30,6 +30,8 @@ const BottomTabNavigation = () => {
 
           if (route.name === "ProductStack") {
             iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Wishlist") {
+            iconName = focused ? "list-outline" : "list-outline";
           } else if (route.name === "Cart") {
             iconName = focused ? "cart" : "cart-outline";
           } else if (route.name === "Account") {
@@ -57,6 +59,7 @@ const BottomTabNavigation = () => {
       })}
     >
       <Tab.Screen name="ProductStack" component={HomeStackNavigation} />
+      <Tab.Screen name="Wishlist" component={Wishlist} />
       <Tab.Screen name="Cart" component={Cart} />
       <Tab.Screen name="Account" component={Account} />
     </Tab.Navigator>

@@ -7,18 +7,36 @@ import {
 } from "react-native";
 import { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useQuery } from "react-query";
+import { CategoryInterface } from "../Types";
+import axios from "axios";
+import { API_URL } from "@env";
 
-const SearchBar = () => {
+interface SearchBarProps {
+  onFilter: (category: string | undefined, searchKeyword: string) => void;
+}
+
+const SearchBar = ({ onFilter }: SearchBarProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>();
+
+  const { data } = useQuery<CategoryInterface[]>({
+    queryKey: ["SearchBar"],
+    queryFn: () =>
+      axios.get(`${API_URL}/api/category/list`).then((res) => res.data),
+  });
 
   const handleFilterPress = () => {
-    // Implement your filter logic here
     setIsOpen(!isOpen);
   };
 
-  const handleCategorySelect = (category: any) => {
-    // Implement your category selection logic here
-    console.log(`Selected category: ${category}`);
+  const handleCategorySelect = (id: string) => {
+    setSelectedCategoryId(id);
+    onFilter(id, "");
+  };
+
+  const handleSearchKeywordChange = (searchKeyword: string) => {
+    onFilter(selectedCategoryId, searchKeyword); // Call the filtering function with the search keyword
   };
 
   return (
@@ -29,7 +47,11 @@ const SearchBar = () => {
         size={20}
         color="#000"
       />
-      <TextInput style={styles.input} placeholder="Search product here.." />
+      <TextInput
+        style={styles.input}
+        placeholder="Search product here.."
+        onChangeText={handleSearchKeywordChange}
+      />
 
       <TouchableOpacity
         style={styles.filterContainer}
@@ -42,16 +64,16 @@ const SearchBar = () => {
       {isOpen && (
         <View style={styles.categoryDropdown}>
           <Text style={styles.categoryLabel}>Category:</Text>
-          <TouchableOpacity onPress={() => handleCategorySelect("Category 1")}>
-            <Text>Category 1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleCategorySelect("Category 2")}>
-            <Text>Category 2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleCategorySelect("Category 3")}>
-            <Text>Category 3</Text>
-          </TouchableOpacity>
-          {/* Add more category options as needed */}
+          {data?.map((item, key) => {
+            return (
+              <TouchableOpacity
+                onPress={() => handleCategorySelect(item.id)}
+                key={key}
+              >
+                <Text>{item.categoryName}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       )}
     </View>

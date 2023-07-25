@@ -21,6 +21,7 @@ interface CartStore {
   removeItem: (id: string) => void;
   saveCartToStorage: (cartData: CartStore) => void;
   getCartFromStorage: () => void;
+  clearCartFromStorage: () => void;
 }
 
 export const useCartStore = create<CartStore>((set) => ({
@@ -131,6 +132,15 @@ export const useCartStore = create<CartStore>((set) => ({
       }
     } catch (error) {
       console.error("Error retrieving cart data from AsyncStorage:", error);
+    }
+  },
+
+  clearCartFromStorage: async () => {
+    try {
+      await AsyncStorage.removeItem("cart-storage");
+      set({ items: [], total: 0 });
+    } catch (error) {
+      console.error("Error clearing cart data from AsyncStorage:", error);
     }
   },
 }));

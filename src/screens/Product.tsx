@@ -8,7 +8,11 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import { ProductStackProps, StackNavigatorParamListType } from "../Types";
+import {
+  ProductStackProps,
+  StackNavigatorParamListType,
+  WishlistInterface,
+} from "../Types";
 import { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -16,6 +20,8 @@ import useAuthStore from "../zustand/AuthStore";
 import { useCartStore } from "../zustand/CartStore";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
+import axios from "axios";
+import { API_URL } from "@env";
 
 const Product = ({ route }: ProductStackProps) => {
   const navigation =
@@ -23,6 +29,7 @@ const Product = ({ route }: ProductStackProps) => {
   const { id, name, imageUrl, description, price, quantity } = route.params;
 
   const [useStateQuantity, setUseStateQuantity] = useState<number>(1);
+  const [disable, setDisable] = useState<boolean>(false);
 
   const user = useAuthStore((state) => state.user);
   const addItem = useCartStore((state) => state.addItem);
@@ -66,6 +73,38 @@ const Product = ({ route }: ProductStackProps) => {
     }
   };
 
+  const handleAddToWishlist = async () => {
+    try {
+      // Check if product is already in user's wishlist
+      const wishlist = await axios.get(`${API_URL}/api/wishlist/${user}`);
+
+      if (
+        wishlist.data.find((item: WishlistInterface) => item.productId === id)
+      ) {
+        // If product is already in wishlist, disable the button and set message
+        Toast.show({
+          type: "info",
+          text1: "Product already in wishlist",
+        });
+        setDisable(true);
+      } else {
+        await axios.post(`${API_URL}/api/wishlist/create`, {
+          productId: id,
+          email: user,
+        });
+        // Set success message and disable button for 5 seconds
+        Toast.show({
+          type: "success",
+          text1: "Added to wishlist",
+        });
+        setDisable(true);
+        setTimeout(() => setDisable(false), 5000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image source={{ uri: imageUrl }} style={styles.image} />
@@ -102,6 +141,9 @@ const Product = ({ route }: ProductStackProps) => {
 
         <Pressable onPress={handleAddToCart} style={styles.button}>
           <Text style={styles.buttonText}>Add to Cart</Text>
+        </Pressable>
+        <Pressable onPress={handleAddToWishlist} style={styles.button}>
+          <Text style={styles.buttonText}>Add to Wishlist</Text>
         </Pressable>
       </View>
     </View>

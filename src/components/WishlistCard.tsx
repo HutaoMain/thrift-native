@@ -1,78 +1,62 @@
-import React, { useState } from "react";
-import { Text, Image, StyleSheet, Pressable, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, Pressable, Image, StyleSheet } from "react-native";
+import React from "react";
+import StarRating from "react-native-star-rating-widget";
 import { ProductInterface, ProductStackProps } from "../Types";
-import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "@env";
-import useAuthStore from "../zustand/AuthStore";
-import StarRating from "react-native-star-rating-widget";
 
-interface Props {
-  product: ProductInterface;
-}
-
-const ProductCard = ({ product }: Props) => {
+const WishlistCard = ({ product }: any) => {
   const navigation = useNavigation<ProductStackProps["navigation"]>();
-
-  const user = useAuthStore((state) => state.user);
 
   const [productRating, setProductRating] = useState<number>();
 
   const handleNavigate = () => {
     navigation.navigate("Product", {
-      id: product.id,
-      name: product.name,
-      imageUrl: product.imageUrl,
-      description: product.description,
-      price: product.price,
-      quantity: product.quantity,
+      id: product?.product?.id,
+      name: product?.product?.name,
+      imageUrl: product?.product?.imageUrl,
+      description: product?.product?.description,
+      price: product?.product?.price,
+      quantity: product?.product?.quantity,
     });
   };
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios.get(
-        `${API_URL}/api/productRating/productId/${product.id}`
+        `${API_URL}/api/productRating/productId/${product?.product?.id}`
       );
       setProductRating(res.data);
     };
     fetchData();
   }, [productRating]);
 
-  // const saveRating = async (newRating: number) => {
-  //   console.log(newRating);
-  //   try {
-  //     const response = await axios.post(`${API_URL}/api/productRating/rate`, {
-  //       rating: newRating,
-  //       email: user,
-  //       productId: product.id,
-  //     });
-  //     setProductRating(response.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   return (
     <Pressable style={styles.card} onPress={handleNavigate}>
-      <Image source={{ uri: product.imageUrl }} style={styles.image} />
+      <Image
+        source={{ uri: product?.product?.imageUrl }}
+        style={styles.image}
+      />
       <View style={styles.content}>
-        <Text style={styles.name}>{product.name}</Text>
-        <Text style={styles.description}>{product.description}</Text>
+        <Text style={styles.name}>{product?.product?.name}</Text>
+        <Text style={styles.description}>{product?.product?.description}</Text>
         <StarRating
           rating={productRating || 0}
-          onChange={setProductRating}
           starSize={27}
+          onChange={setProductRating}
         />
-        <Text style={styles.price}>₱{product.price}</Text>
-        <Text style={styles.quantity}>Quantity: {product.quantity}</Text>
+        <Text style={styles.price}>₱{product?.product?.price}</Text>
+        <Text style={styles.quantity}>
+          Quantity: {product?.product?.quantity}
+        </Text>
       </View>
     </Pressable>
   );
 };
 
-export default ProductCard;
+export default WishlistCard;
 
 const styles = StyleSheet.create({
   card: {

@@ -6,7 +6,6 @@ import { API_URL } from "@env";
 import useAuthStore from "../zustand/AuthStore";
 import OrderCard from "../components/OrderCard";
 import { useState } from "react";
-import { Picker } from "@react-native-picker/picker";
 
 const Orders = () => {
   //   const [minPrice, setMinPrice] = useState<number | undefined>(undefined);

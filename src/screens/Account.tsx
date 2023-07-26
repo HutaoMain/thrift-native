@@ -1,4 +1,10 @@
-import { Text, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 import useAuthStore from "../zustand/AuthStore";
 import Orders from "./Orders";
 
@@ -8,7 +14,9 @@ const Account = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text>Order History</Text>
-      <Orders />
+      <ScrollView>
+        <Orders />
+      </ScrollView>
       <TouchableOpacity style={styles.button} onPress={clearUser}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
@@ -25,6 +33,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginTop: 50,
+    backgroundColor: "white",
   },
   button: {
     borderWidth: 1,

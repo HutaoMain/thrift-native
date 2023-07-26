@@ -1,15 +1,17 @@
 import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 import React from "react";
-import StarRating from "react-native-star-rating-widget";
-import { ProductInterface, ProductStackProps } from "../Types";
+import { Rating } from "react-native-ratings";
+import { ProductStackProps } from "../Types";
 import { useNavigation } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "@env";
+import { useIsFocused } from "@react-navigation/native";
 
 const WishlistCard = ({ product }: any) => {
   const navigation = useNavigation<ProductStackProps["navigation"]>();
 
+  const isFocused = useIsFocused();
   const [productRating, setProductRating] = useState<number>();
 
   const handleNavigate = () => {
@@ -30,8 +32,10 @@ const WishlistCard = ({ product }: any) => {
       );
       setProductRating(res.data);
     };
-    fetchData();
-  }, [productRating]);
+    if (isFocused) {
+      fetchData();
+    }
+  }, [isFocused]);
 
   return (
     <Pressable style={styles.card} onPress={handleNavigate}>
@@ -42,10 +46,11 @@ const WishlistCard = ({ product }: any) => {
       <View style={styles.content}>
         <Text style={styles.name}>{product?.product?.name}</Text>
         <Text style={styles.description}>{product?.product?.description}</Text>
-        <StarRating
-          rating={productRating || 0}
-          starSize={27}
-          onChange={setProductRating}
+        <Rating
+          type="star"
+          imageSize={30}
+          startingValue={productRating}
+          readonly={true}
         />
         <Text style={styles.price}>₱{product?.product?.price}</Text>
         <Text style={styles.quantity}>

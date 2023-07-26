@@ -13,7 +13,7 @@ import {
   StackNavigatorParamListType,
   WishlistInterface,
 } from "../Types";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import useAuthStore from "../zustand/AuthStore";
@@ -22,6 +22,8 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import { API_URL } from "@env";
+import { Rating } from "react-native-ratings";
+import { useIsFocused } from "@react-navigation/native";
 
 const Product = ({ route }: ProductStackProps) => {
   const navigation =
@@ -31,8 +33,23 @@ const Product = ({ route }: ProductStackProps) => {
   const [useStateQuantity, setUseStateQuantity] = useState<number>(1);
   const [disable, setDisable] = useState<boolean>(false);
 
+  const isFocused = useIsFocused();
+  const [productRating, setProductRating] = useState<number>();
+
   const user = useAuthStore((state) => state.user);
   const addItem = useCartStore((state) => state.addItem);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get(
+        `${API_URL}/api/productRating/productId/${id}`
+      );
+      setProductRating(res.data);
+    };
+    if (isFocused) {
+      fetchData();
+    }
+  }, [isFocused]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -138,7 +155,14 @@ const Product = ({ route }: ProductStackProps) => {
           </View>
         </View>
         <Text style={styles.description}>{description}</Text>
-
+        <Rating
+          type="star"
+          imageSize={30}
+          startingValue={productRating}
+          readonly={true}
+          // ratingCount={productRating}
+          onFinishRating={setProductRating}
+        />
         <Pressable onPress={handleAddToCart} style={styles.button}>
           <Text style={styles.buttonText}>Add to Cart</Text>
         </Pressable>
@@ -155,6 +179,7 @@ export default Product;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   image: {
     width: "100%",

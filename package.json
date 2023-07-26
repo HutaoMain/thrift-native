@@ -22,11 +22,10 @@
     "react": "18.2.0",
     "react-native": "0.71.8",
     "react-native-dotenv": "^3.4.9",
-    "react-native-star-rating-widget": "^1.7.2",
+    "react-native-ratings": "^8.1.0",
     "react-native-toast-message": "^2.1.6",
     "react-query": "^3.39.3",
-    "zustand": "^4.3.9",
-    "react-native-svg": "13.4.0"
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

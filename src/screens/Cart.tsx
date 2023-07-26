@@ -6,6 +6,7 @@ import {
   StyleSheet,
   FlatList,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import useCartStore from "../zustand/CartStore";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -83,7 +84,7 @@ const Cart = () => {
       orderJsonList: itemsToString,
       status: "Pending",
       modeOfPayment: selectedPaymentMethod,
-      dateNow: dayjs().format("DD-MM-YYYY HH:mm A"),
+      dateNow: dayjs().format("YYYY-MM-DD HH:mma"),
 
       barangay: data?.barangay,
       street: data?.street,
@@ -186,19 +187,8 @@ const Cart = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* <FlatList
-        data={items}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={
-          <Text style={styles.sectionTitle}>Here's what you're getting!</Text>
-        }
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>Your cart is empty.</Text>
-        }
-      /> */}
       <View style={{ justifyContent: "space-between", flex: 1 }}>
-        <View>
+        <ScrollView>
           {items.length > 0 ? (
             <>
               <Text style={styles.sectionTitle}>
@@ -256,7 +246,7 @@ const Cart = () => {
           ) : (
             <Text style={styles.emptyText}>Your cart is empty.</Text>
           )}
-        </View>
+        </ScrollView>
         <View style={styles.orderSummary}>
           <View>
             <View style={styles.formRow}>

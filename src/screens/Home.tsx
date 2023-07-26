@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, FlatList } from "react-native";
+import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
@@ -26,7 +26,7 @@ const Home = () => {
       }
     };
     fecthData();
-  }, [filteredData]);
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -58,12 +58,15 @@ const Home = () => {
     }
     setFilteredData(filteredProducts || []);
   }, [productData]);
+
   return (
     <SafeAreaView style={styles.container}>
       <SearchBar onFilter={handleFilter} />
-      {filteredData?.map((item, key) => (
-        <ProductCard product={item} key={key} />
-      ))}
+      <ScrollView style={styles.products}>
+        {filteredData?.map((item, key) => (
+          <ProductCard product={item} key={key} />
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 };

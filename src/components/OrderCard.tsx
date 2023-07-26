@@ -1,6 +1,6 @@
 import { View, SafeAreaView, Text, StyleSheet, Image } from "react-native";
-import { OrderInterface, ProductRatingInterface } from "../Types";
-import StarRating from "react-native-star-rating-widget";
+import { OrderInterface } from "../Types";
+import { Rating } from "react-native-ratings";
 import useAuthStore from "../zustand/AuthStore";
 import { API_URL } from "@env";
 import axios from "axios";
@@ -16,8 +16,6 @@ const OrderCard = ({ order }: Props) => {
   const [productRating, setProductRating] = useState<number>();
 
   const user = useAuthStore((state) => state.user);
-
-  console.log(productRating);
 
   const saveRating = async (newRating: number) => {
     console.log(newRating);
@@ -45,8 +43,14 @@ const OrderCard = ({ order }: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ width: "100%", flexDirection: "row" }}>
-        <Text>{order.status}</Text>
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+          flexDirection: "row",
+        }}
+      >
+        <Text style={{ paddingRight: 10 }}>{order.status}</Text>
         <Text>{order.dateNow}</Text>
       </View>
       <View style={styles.productDetails}>
@@ -66,12 +70,13 @@ const OrderCard = ({ order }: Props) => {
       </Text>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
         <Text style={{ fontSize: 13 }}>Please rate the product</Text>
-        <StarRating
-          rating={productRating || 0}
-          onChange={(newValue) => {
+        <Rating
+          type="star"
+          imageSize={25}
+          startingValue={productRating}
+          onFinishRating={(newValue: number) => {
             saveRating(newValue);
           }}
-          starSize={27}
         />
       </View>
     </SafeAreaView>
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderTopColor: "#ccc",
     borderBottomColor: "#ccc",
+    backgroundColor: "white",
   },
   productDetails: {
     flexDirection: "row",

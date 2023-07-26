@@ -5,8 +5,8 @@ import { ProductInterface, ProductStackProps } from "../Types";
 import { useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "@env";
-import useAuthStore from "../zustand/AuthStore";
-import StarRating from "react-native-star-rating-widget";
+import { Rating } from "react-native-ratings";
+import { useIsFocused } from "@react-navigation/native";
 
 interface Props {
   product: ProductInterface;
@@ -15,8 +15,7 @@ interface Props {
 const ProductCard = ({ product }: Props) => {
   const navigation = useNavigation<ProductStackProps["navigation"]>();
 
-  const user = useAuthStore((state) => state.user);
-
+  const isFocused = useIsFocused();
   const [productRating, setProductRating] = useState<number>();
 
   const handleNavigate = () => {
@@ -37,22 +36,12 @@ const ProductCard = ({ product }: Props) => {
       );
       setProductRating(res.data);
     };
-    fetchData();
-  }, [productRating]);
+    if (isFocused) {
+      fetchData();
+    }
+  }, [isFocused]);
 
-  // const saveRating = async (newRating: number) => {
-  //   console.log(newRating);
-  //   try {
-  //     const response = await axios.post(`${API_URL}/api/productRating/rate`, {
-  //       rating: newRating,
-  //       email: user,
-  //       productId: product.id,
-  //     });
-  //     setProductRating(response.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  console.log(productRating);
 
   return (
     <Pressable style={styles.card} onPress={handleNavigate}>
@@ -60,10 +49,13 @@ const ProductCard = ({ product }: Props) => {
       <View style={styles.content}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.description}>{product.description}</Text>
-        <StarRating
-          rating={productRating || 0}
-          onChange={setProductRating}
-          starSize={27}
+        <Rating
+          type="star"
+          imageSize={30}
+          startingValue={productRating}
+          readonly={true}
+          // ratingCount={productRating}
+          onFinishRating={setProductRating}
         />
         <Text style={styles.price}>₱{product.price}</Text>
         <Text style={styles.quantity}>Quantity: {product.quantity}</Text>

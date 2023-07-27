@@ -17,7 +17,7 @@ const Home = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>(""); // add a state for search keyword
 
   useEffect(() => {
-    const fecthData = async () => {
+    const fetchData = async () => {
       try {
         const res = await axios.get(`${API_URL}/api/product/list`);
         setProductData(res.data);
@@ -25,7 +25,7 @@ const Home = () => {
         console.log(error);
       }
     };
-    fecthData();
+    fetchData();
   }, []);
 
   useLayoutEffect(() => {
@@ -46,7 +46,7 @@ const Home = () => {
   useEffect(() => {
     // apply the same filter logic as in handleFilter
     let filteredProducts = productData;
-    if (category) {
+    if (category !== undefined) {
       filteredProducts = filteredProducts?.filter(
         (product) => product.categoryId === category
       );
@@ -57,7 +57,7 @@ const Home = () => {
       );
     }
     setFilteredData(filteredProducts || []);
-  }, [productData]);
+  }, [productData, category, searchKeyword]);
 
   return (
     <SafeAreaView style={styles.container}>

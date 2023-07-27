@@ -18,7 +18,10 @@ interface SearchBarProps {
 
 const SearchBar = ({ onFilter }: SearchBarProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>();
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState<
+    string | undefined
+  >(undefined);
 
   const { data } = useQuery<CategoryInterface[]>({
     queryKey: ["SearchBar"],
@@ -26,17 +29,19 @@ const SearchBar = ({ onFilter }: SearchBarProps) => {
       axios.get(`${API_URL}/api/category/list`).then((res) => res.data),
   });
 
+  console.log(selectedCategoryId);
+
   const handleFilterPress = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleCategorySelect = (id: string) => {
+  const handleCategorySelect = (id: string | undefined) => {
     setSelectedCategoryId(id);
     onFilter(id, "");
   };
 
   const handleSearchKeywordChange = (searchKeyword: string) => {
-    onFilter(selectedCategoryId, searchKeyword); // Call the filtering function with the search keyword
+    onFilter(selectedCategoryId, searchKeyword);
   };
 
   return (
@@ -64,6 +69,9 @@ const SearchBar = ({ onFilter }: SearchBarProps) => {
       {isOpen && (
         <View style={styles.categoryDropdown}>
           <Text style={styles.categoryLabel}>Category:</Text>
+          <TouchableOpacity onPress={() => handleCategorySelect(undefined)}>
+            <Text>All</Text>
+          </TouchableOpacity>
           {data?.map((item, key) => {
             return (
               <TouchableOpacity

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Modal,
 } from "react-native";
 import useCartStore from "../zustand/CartStore";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -38,6 +39,7 @@ const Cart = () => {
 
   const [userData, setUserData] = useState<UserInterface>();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("pickup");
+  const [imageModalVisible, setImageModalVisible] = useState<boolean>(false);
 
   const { data } = useQuery<UserAddressInterface>({
     queryKey: ["Address"],
@@ -93,25 +95,25 @@ const Cart = () => {
       await axios.post(`${API_URL}/api/order/create`, orderData);
       console.log("here after");
 
-      clearCartAndNavigateToHome();
+      Toast.show({
+        type: "success",
+        text1: "Successfully checkout your orders.",
+      });
+
+      setImageModalVisible(true);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const clearCartAndNavigateToHome = async () => {
-    Toast.show({
-      type: "success",
-      text1: "Successfully checkout your orders.",
-    });
-    setTimeout(() => {
-      clearCartFromStorage();
-      navigate.navigate("Home");
-    }, 2000);
-  };
-
   const handleGoToAdress = () => {
     navigate.navigate("Address");
+  };
+
+  const handleCloseModal = () => {
+    clearCartFromStorage();
+    navigate.navigate("Home");
+    setImageModalVisible(false);
   };
 
   const handlePaymentMethodChange = (itemValue: string) => {
@@ -247,6 +249,28 @@ const Cart = () => {
           </View>
         </View>
       </View>
+      {imageModalVisible && (
+        <Modal style={styles.modalContainer}>
+          <View
+            style={{
+              alignItems: "center",
+              paddingTop: 70,
+              height: "100%",
+            }}
+          >
+            <Image
+              source={require("../../assets/happy-thrift-qr.jpg")}
+              style={styles.modalImage}
+            />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={handleCloseModal}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      )}
     </SafeAreaView>
   );
 };
@@ -338,5 +362,32 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "bold",
     fontSize: 16,
+  },
+
+  // Modal
+  modalContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+    height: "100%",
+  },
+  modalImage: {
+    width: 300,
+    height: 300,
+    resizeMode: "contain",
+  },
+  closeButton: {
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+    borderColor: "black",
+    borderWidth: 1,
+    width: "80%",
+  },
+  closeButtonText: {
+    fontSize: 16,
+    color: "#00205C",
+    textAlign: "center",
   },
 });

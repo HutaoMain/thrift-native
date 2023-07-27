@@ -28,26 +28,23 @@ export default Account;
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
     flex: 1,
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 50,
     backgroundColor: "white",
   },
   button: {
     borderWidth: 1,
     borderColor: "black",
-    position: "absolute",
-    bottom: 10,
     width: "80%",
     paddingVertical: 10,
     paddingHorizontal: 20,
-
     display: "flex",
     alignItems: "center",
-
     borderRadius: 10,
+    marginBottom: 10,
   },
   buttonText: {
     color: "black",

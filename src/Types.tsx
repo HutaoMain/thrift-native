@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 export interface ProductInterface {
   id: string;
   name: string;
-  imageUrl: string;
+  imageUrl: string[];
   description: string;
   price: number;
   quantity: number;
@@ -85,7 +85,7 @@ export type StackNavigatorParamListType = {
   Product: {
     id: string;
     name: string;
-    imageUrl: string;
+    imageUrl: string[];
     description: string;
     price: number;
     quantity: number;

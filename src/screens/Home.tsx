@@ -5,8 +5,8 @@ import SearchBar from "../components/SearchBar";
 
 import { ProductInterface } from "../Types";
 import axios from "axios";
-import { API_URL } from "@env";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from "../../API_URL";
 
 const Home = () => {
   const navigation = useNavigation();

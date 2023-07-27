@@ -7,11 +7,11 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_URL } from "@env";
 import useAuthStore from "../zustand/AuthStore";
 import Toast from "react-native-toast-message";
 import { useQuery } from "react-query";
 import { UserAddressInterface } from "../Types";
+import { API_URL } from "../../API_URL";
 
 const Address = () => {
   const [contactNumber, setContactNumber] = useState<string>("");

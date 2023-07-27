@@ -5,8 +5,8 @@ import { ProductStackProps } from "../Types";
 import { useNavigation } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_URL } from "@env";
 import { useIsFocused } from "@react-navigation/native";
+import { API_URL } from "../../API_URL";
 
 const WishlistCard = ({ product }: any) => {
   const navigation = useNavigation<ProductStackProps["navigation"]>();
@@ -40,7 +40,7 @@ const WishlistCard = ({ product }: any) => {
   return (
     <Pressable style={styles.card} onPress={handleNavigate}>
       <Image
-        source={{ uri: product?.product?.imageUrl }}
+        source={{ uri: product?.product?.imageUrl?.[0] }}
         style={styles.image}
       />
       <View style={styles.content}>

@@ -4,7 +4,6 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
   SafeAreaView,
   ScrollView,
 } from "react-native";
@@ -12,7 +11,6 @@ import useCartStore from "../zustand/CartStore";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import {
-  ProductInterface,
   StackNavigatorParamListType,
   UserAddressInterface,
   UserInterface,
@@ -20,16 +18,12 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "react-query";
 import axios from "axios";
-import { API_URL } from "@env";
 import useAuthStore from "../zustand/AuthStore";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import dayjs from "dayjs";
-
-interface Prop {
-  item: ProductInterface;
-}
+import { API_URL } from "../../API_URL";
 
 const Cart = () => {
   const items = useCartStore((state) => state.items);
@@ -70,7 +64,7 @@ const Cart = () => {
 
   const itemsToString = JSON.stringify(items);
 
-  console.log(itemsToString);
+  console.log(items);
 
   const handlePlaceOrder = async () => {
     const orderData = {
@@ -84,7 +78,7 @@ const Cart = () => {
       orderJsonList: itemsToString,
       status: "Pending",
       modeOfPayment: selectedPaymentMethod,
-      dateNow: dayjs().format("YYYY-MM-DD HH:mma"),
+      dateNow: dayjs().format("YYYY-MM-DD hh:mma"),
 
       barangay: data?.barangay,
       street: data?.street,
@@ -95,7 +89,9 @@ const Cart = () => {
     };
 
     try {
+      console.log("here");
       await axios.post(`${API_URL}/api/order/create`, orderData);
+      console.log("here after");
 
       clearCartAndNavigateToHome();
     } catch (error) {
@@ -113,40 +109,6 @@ const Cart = () => {
       navigate.navigate("Home");
     }, 2000);
   };
-
-  const renderItem = ({ item }: Prop) => (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: "rgb(220, 220, 220)",
-        padding: 10,
-      }}
-    >
-      <View style={styles.productDetails}>
-        <Image
-          style={styles.checkoutImage}
-          source={{ uri: item.imageUrl }}
-          resizeMode="contain"
-        />
-        <View style={styles.productInfo}>
-          <Text>{item.name}</Text>
-          <Text>₱{item.price}.00</Text>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <TouchableOpacity onPress={() => decreaseItem(item.id)}>
-            <FontAwesome5 name="minus-circle" size={20} color="black" />
-          </TouchableOpacity>
-          <Text>{item.quantity}</Text>
-          <TouchableOpacity onPress={() => increaseItem(item.id)}>
-            <FontAwesome5 name="plus-circle" size={20} color="black" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  );
 
   const handleGoToAdress = () => {
     navigate.navigate("Address");
@@ -295,6 +257,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    paddingTop: 40,
     backgroundColor: "#FFFFFF",
   },
   title: {

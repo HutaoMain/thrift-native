@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  Alert,
   TouchableOpacity,
   TextInput,
   StyleSheet,
@@ -12,7 +11,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackNavigationType } from "../Types";
 import Toast from "react-native-toast-message";
 import axios from "axios";
-import { API_URL } from "@env";
+import { API_URL } from "../../API_URL";
 
 const Register = () => {
   const [email, setEmail] = useState("");

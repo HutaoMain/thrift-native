@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL } from "@env";
+import { API_URL } from "../../API_URL";
 
 interface CartItem {
   id: string;

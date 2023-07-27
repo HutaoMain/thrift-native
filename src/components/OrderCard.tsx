@@ -2,9 +2,9 @@ import { View, SafeAreaView, Text, StyleSheet, Image } from "react-native";
 import { OrderInterface } from "../Types";
 import { Rating } from "react-native-ratings";
 import useAuthStore from "../zustand/AuthStore";
-import { API_URL } from "@env";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { API_URL } from "../../API_URL";
 
 interface Props {
   order: OrderInterface;
@@ -12,6 +12,8 @@ interface Props {
 
 const OrderCard = ({ order }: Props) => {
   const orderData = JSON.parse(order.orderJsonList);
+
+  console.log(order);
 
   const [productRating, setProductRating] = useState<number>();
 
@@ -39,7 +41,7 @@ const OrderCard = ({ order }: Props) => {
       setProductRating(res.data);
     };
     fetchData();
-  }, [productRating]);
+  }, [orderData]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,6 +50,7 @@ const OrderCard = ({ order }: Props) => {
           flex: 1,
           width: "100%",
           flexDirection: "row",
+          marginVertical: 10,
         }}
       >
         <Text style={{ paddingRight: 10 }}>{order.status}</Text>
@@ -87,7 +90,7 @@ export default OrderCard;
 
 const styles = StyleSheet.create({
   container: {
-    height: 200,
+    height: 230,
     width: "100%",
     padding: 10,
     borderTopWidth: 1,

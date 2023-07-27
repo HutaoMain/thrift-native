@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  FlatList,
 } from "react-native";
 import {
   ProductStackProps,
@@ -21,9 +22,9 @@ import { useCartStore } from "../zustand/CartStore";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import axios from "axios";
-import { API_URL } from "@env";
 import { Rating } from "react-native-ratings";
 import { useIsFocused } from "@react-navigation/native";
+import { API_URL } from "../../API_URL";
 
 const Product = ({ route }: ProductStackProps) => {
   const navigation =
@@ -74,7 +75,7 @@ const Product = ({ route }: ProductStackProps) => {
     const product = {
       id: id,
       name: name,
-      imageUrl: imageUrl,
+      imageUrl: imageUrl?.[0],
       description: description,
       price: price * useStateQuantity,
       quantity: useStateQuantity,
@@ -92,13 +93,11 @@ const Product = ({ route }: ProductStackProps) => {
 
   const handleAddToWishlist = async () => {
     try {
-      // Check if product is already in user's wishlist
       const wishlist = await axios.get(`${API_URL}/api/wishlist/${user}`);
 
       if (
         wishlist.data.find((item: WishlistInterface) => item.productId === id)
       ) {
-        // If product is already in wishlist, disable the button and set message
         Toast.show({
           type: "info",
           text1: "Product already in wishlist",
@@ -109,7 +108,6 @@ const Product = ({ route }: ProductStackProps) => {
           productId: id,
           email: user,
         });
-        // Set success message and disable button for 5 seconds
         Toast.show({
           type: "success",
           text1: "Added to wishlist",
@@ -124,7 +122,15 @@ const Product = ({ route }: ProductStackProps) => {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+      <FlatList
+        data={imageUrl}
+        renderItem={({ item }) => (
+          <Image source={{ uri: item }} style={styles.image} />
+        )}
+        keyExtractor={(index) => index.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      />
       <View style={styles.content}>
         <Text style={styles.name}>{name}</Text>
         <View style={styles.priceQuantityContainer}>
@@ -166,7 +172,11 @@ const Product = ({ route }: ProductStackProps) => {
         <Pressable onPress={handleAddToCart} style={styles.button}>
           <Text style={styles.buttonText}>Add to Cart</Text>
         </Pressable>
-        <Pressable onPress={handleAddToWishlist} style={styles.button}>
+        <Pressable
+          disabled={disable}
+          onPress={handleAddToWishlist}
+          style={styles.button}
+        >
           <Text style={styles.buttonText}>Add to Wishlist</Text>
         </Pressable>
       </View>
@@ -182,9 +192,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   image: {
-    width: "100%",
+    width: 400,
     height: 400,
-    resizeMode: "cover",
   },
   content: {
     paddingVertical: 20,

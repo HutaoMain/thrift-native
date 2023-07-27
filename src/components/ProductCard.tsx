@@ -4,9 +4,9 @@ import { useNavigation } from "@react-navigation/native";
 import { ProductInterface, ProductStackProps } from "../Types";
 import { useEffect } from "react";
 import axios from "axios";
-import { API_URL } from "@env";
 import { Rating } from "react-native-ratings";
 import { useIsFocused } from "@react-navigation/native";
+import { API_URL } from "../../API_URL";
 
 interface Props {
   product: ProductInterface;
@@ -45,7 +45,7 @@ const ProductCard = ({ product }: Props) => {
 
   return (
     <Pressable style={styles.card} onPress={handleNavigate}>
-      <Image source={{ uri: product.imageUrl }} style={styles.image} />
+      <Image source={{ uri: product.imageUrl?.[0] }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.description}>{product.description}</Text>

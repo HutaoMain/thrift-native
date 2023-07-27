@@ -10,7 +10,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useQuery } from "react-query";
 import { CategoryInterface } from "../Types";
 import axios from "axios";
-import { API_URL } from "@env";
+import { API_URL } from "../../API_URL";
 
 interface SearchBarProps {
   onFilter: (category: string | undefined, searchKeyword: string) => void;

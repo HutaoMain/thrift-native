@@ -11,8 +11,8 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackNavigationType } from "../Types";
 import axios from "axios";
-import { API_URL } from "@env";
 import useAuthStore from "../zustand/AuthStore";
+import { API_URL } from "../../API_URL";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");

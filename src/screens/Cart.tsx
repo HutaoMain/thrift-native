@@ -102,6 +102,8 @@ const Cart = () => {
 
       if (selectedPaymentMethod === "gcash") {
         setImageModalVisible(true);
+      } else {
+        handleCloseModal();
       }
     } catch (error) {
       console.log(error);

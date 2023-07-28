@@ -1,4 +1,13 @@
-import { StyleSheet, SafeAreaView, View, TextInput } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  RefreshControl,
+} from "react-native";
 import { useQuery } from "react-query";
 import { OrderInterface } from "../Types";
 import axios from "axios";
@@ -9,16 +18,26 @@ import { API_URL } from "../../API_URL";
 
 const Orders = () => {
   const [searchText, setSearchText] = useState<string>("");
+  const [refreshing, setRefreshing] = useState(false);
+
+  const clearUser = useAuthStore((state) => state.clearUser);
 
   const user = useAuthStore((state) => state.user);
 
-  const { data } = useQuery<OrderInterface[]>({
-    queryKey: ["Orders"],
+  const { data, refetch } = useQuery<OrderInterface[]>({
+    queryKey: ["Orders", searchText], // Include searchText in the query key
     queryFn: () =>
       axios
         .get(`${API_URL}/api/order/listOrder/${user}`)
         .then((res) => res.data),
+    enabled: !refreshing, // Prevent automatic query when refreshing
   });
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const applyFilters = (order: OrderInterface) => {
     if (searchText.trim() !== "") {
@@ -47,9 +66,18 @@ const Orders = () => {
           onChangeText={(text) => setSearchText(text)}
         />
       </View>
-      {filteredOrders?.map((item, key) => (
-        <OrderCard key={key} order={item} />
-      ))}
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        {filteredOrders?.map((item, key) => (
+          <OrderCard key={key} order={item} />
+        ))}
+      </ScrollView>
+      <TouchableOpacity style={styles.button} onPress={clearUser}>
+        <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -74,5 +102,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginRight: 10,
     width: "100%",
+  },
+  button: {
+    borderWidth: 1,
+    borderColor: "black",
+    width: 350,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    display: "flex",
+    alignItems: "center",
+    borderRadius: 10,
+    marginVertical: 30,
+  },
+  buttonText: {
+    color: "black",
   },
 });

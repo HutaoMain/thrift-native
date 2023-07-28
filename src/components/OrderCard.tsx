@@ -50,7 +50,7 @@ const OrderCard = ({ order }: Props) => {
           flex: 1,
           width: "100%",
           flexDirection: "row",
-          marginVertical: 10,
+          marginBottom: 10,
         }}
       >
         <Text style={{ paddingRight: 10 }}>{order.status}</Text>
@@ -90,7 +90,7 @@ export default OrderCard;
 
 const styles = StyleSheet.create({
   container: {
-    height: 230,
+    paddingVertical: 20,
     width: "100%",
     padding: 10,
     borderTopWidth: 1,

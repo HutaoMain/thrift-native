@@ -4,23 +4,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeStackNavigation from "./HomeStackNavigation";
 import Wishlist from "../screens/Wishlist";
+import { View, Image } from "react-native";
 
 const BottomTabNavigation = () => {
   const Tab = createBottomTabNavigator();
 
-  // const renderHeaderRight = () => {
-  //   const avatarUrl =
-  //     "https://images.gmanews.tv/webpics/2021/01/Screen_Shot_2021-01-19_at_7_2021_01_19_19_52_25.png";
-
-  //   return (
-  //     <TouchableOpacity onPress={() => console.log("Avatar pressed")}>
-  //       <Image
-  //         source={{ uri: avatarUrl }}
-  //         style={{ width: 40, height: 40, borderRadius: 15, marginRight: 20 }}
-  //       />
-  //     </TouchableOpacity>
-  //   );
-  // };
+  const renderHeaderRight = () => {
+    return (
+      <View>
+        <Image
+          source={require("../../assets/logo.jpg")}
+          style={{ width: 40, height: 40, borderRadius: 15, marginRight: 20 }}
+        />
+      </View>
+    );
+  };
 
   return (
     <Tab.Navigator
@@ -49,19 +47,31 @@ const BottomTabNavigation = () => {
         tabBarStyle: {
           height: 60,
         },
-        headerShown: false,
         tabBarShowLabel: false,
-        // headerTitleStyle: {
-        //   display: "none",
-        // },
-        // headerBackTitleVisible: false,
-        // headerRight: () => renderHeaderRight(),
+        headerBackTitleVisible: false,
+        headerRight: () => renderHeaderRight(),
       })}
     >
-      <Tab.Screen name="ProductStack" component={HomeStackNavigation} />
-      <Tab.Screen name="Wishlist" component={Wishlist} />
-      <Tab.Screen name="Cart" component={Cart} />
-      <Tab.Screen name="Account" component={Account} />
+      <Tab.Screen
+        name="ProductStack"
+        component={HomeStackNavigation}
+        options={{ headerTitle: "Happy Thrift" }}
+      />
+      <Tab.Screen
+        name="Wishlist"
+        component={Wishlist}
+        options={{ headerTitle: "Happy Thrift" }}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={Cart}
+        options={{ headerTitle: "Happy Thrift" }}
+      />
+      <Tab.Screen
+        name="Account"
+        component={Account}
+        options={{ headerTitle: "Happy Thrift" }}
+      />
     </Tab.Navigator>
   );
 };

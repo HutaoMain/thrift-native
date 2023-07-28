@@ -38,7 +38,7 @@ const Cart = () => {
   const user = useAuthStore((state) => state.user);
 
   const [userData, setUserData] = useState<UserInterface>();
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("pickup");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("gcash");
   const [imageModalVisible, setImageModalVisible] = useState<boolean>(false);
 
   const { data } = useQuery<UserAddressInterface>({
@@ -100,7 +100,9 @@ const Cart = () => {
         text1: "Successfully checkout your orders.",
       });
 
-      setImageModalVisible(true);
+      if (selectedPaymentMethod === "gcash") {
+        setImageModalVisible(true);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -127,7 +129,6 @@ const Cart = () => {
           flexDirection: "row",
           gap: 20,
           alignItems: "center",
-          marginVertical: 10,
           marginBottom: 20,
         }}
       >
@@ -220,9 +221,8 @@ const Cart = () => {
                 selectedValue={selectedPaymentMethod}
                 onValueChange={handlePaymentMethodChange}
               >
-                <Picker.Item label="Pickup" value="pickup" />
-                <Picker.Item label="COD" value="cod" />
                 <Picker.Item label="GCash" value="gcash" />
+                <Picker.Item label="COD" value="cod" />
               </Picker>
             </View>
           </View>
@@ -281,7 +281,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    paddingTop: 40,
     backgroundColor: "#FFFFFF",
   },
   title: {

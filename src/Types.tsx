@@ -90,9 +90,7 @@ export type StackNavigatorParamListType = {
     price: number;
     quantity: number;
   };
-  ProductFullImage: {
-    image: string;
-  };
+  Cart: undefined;
   Address: undefined;
   Wishlist: undefined;
 };
@@ -100,11 +98,6 @@ export type StackNavigatorParamListType = {
 export type ProductStackProps = NativeStackScreenProps<
   StackNavigatorParamListType,
   "Product"
->;
-
-export type ProductFullImageStackProps = NativeStackScreenProps<
-  StackNavigatorParamListType,
-  "ProductFullImage"
 >;
 
 export type AuthStackNavigationType = {

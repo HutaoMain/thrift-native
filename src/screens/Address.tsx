@@ -10,9 +10,10 @@ import axios from "axios";
 import useAuthStore from "../zustand/AuthStore";
 import Toast from "react-native-toast-message";
 import { useQuery } from "react-query";
-import { UserAddressInterface } from "../Types";
+import { StackNavigatorParamListType, UserAddressInterface } from "../Types";
 import { API_URL } from "../../API_URL";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 const Address = () => {
   const [contactNumber, setContactNumber] = useState<string>("");
@@ -24,7 +25,8 @@ const Address = () => {
 
   const user = useAuthStore((state) => state.user);
 
-  const navigate = useNavigation();
+  const navigate =
+    useNavigation<NativeStackNavigationProp<StackNavigatorParamListType>>();
 
   const { data } = useQuery<UserAddressInterface>({
     queryKey: ["Address"],
@@ -58,7 +60,7 @@ const Address = () => {
         type: "success",
         text1: "Successfully saved your address.",
       });
-      navigate.goBack();
+      navigate.navigate("Cart");
     } catch (error) {
       console.log();
     }

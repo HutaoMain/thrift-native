@@ -25,12 +25,12 @@ const Orders = () => {
   const user = useAuthStore((state) => state.user);
 
   const { data, refetch } = useQuery<OrderInterface[]>({
-    queryKey: ["Orders", searchText], // Include searchText in the query key
+    queryKey: ["Orders", searchText],
     queryFn: () =>
       axios
         .get(`${API_URL}/api/order/listOrder/${user}`)
         .then((res) => res.data),
-    enabled: !refreshing, // Prevent automatic query when refreshing
+    enabled: !refreshing,
   });
 
   const handleRefresh = async () => {
@@ -54,7 +54,21 @@ const Orders = () => {
     return true;
   };
 
-  const filteredOrders = data?.filter(applyFilters);
+  const statusOrder = ["pending", "to ship", "cancelled", "completed"];
+
+  // Sort function to sort orders based on their status
+  const compareOrdersByStatus = (
+    orderA: OrderInterface,
+    orderB: OrderInterface
+  ) => {
+    const statusA = orderA.status.toLowerCase();
+    const statusB = orderB.status.toLowerCase();
+    return statusOrder.indexOf(statusA) - statusOrder.indexOf(statusB);
+  };
+
+  const filteredOrders = data
+    ?.filter(applyFilters)
+    ?.sort(compareOrdersByStatus);
 
   return (
     <SafeAreaView style={styles.container}>

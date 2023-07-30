@@ -1,10 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProductSingleScreen from "../screens/Product";
 import { StackNavigatorParamListType } from "../Types";
-import ProductFullImage from "../components/ProductFullImage";
 import Home from "../screens/Home";
 import Product from "../screens/Product";
 import Address from "../screens/Address";
+import Cart from "../screens/Cart";
 
 const HomeStackNavigation = () => {
   const HomeStack = createNativeStackNavigator<StackNavigatorParamListType>();
@@ -27,8 +26,8 @@ const HomeStackNavigation = () => {
         options={{ headerShown: false }}
       />
       <HomeStack.Screen
-        name="ProductFullImage"
-        component={ProductFullImage}
+        name="Cart"
+        component={Cart}
         options={{ headerShown: false }}
       />
     </HomeStack.Navigator>

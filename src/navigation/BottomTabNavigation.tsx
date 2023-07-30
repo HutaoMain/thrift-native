@@ -13,7 +13,7 @@ const BottomTabNavigation = () => {
     return (
       <View>
         <Image
-          source={require("../../assets/logo.jpg")}
+          source={require("../../assets/logo.png")}
           style={{ width: 40, height: 40, borderRadius: 15, marginRight: 20 }}
         />
       </View>

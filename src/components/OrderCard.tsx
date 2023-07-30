@@ -8,9 +8,10 @@ import { API_URL } from "../../API_URL";
 
 interface Props {
   order: OrderInterface;
+  refreshing: boolean;
 }
 
-const OrderCard = ({ order }: Props) => {
+const OrderCard = ({ order, refreshing }: Props) => {
   const orderData = JSON.parse(order.orderJsonList);
 
   console.log(order);
@@ -41,7 +42,7 @@ const OrderCard = ({ order }: Props) => {
       setProductRating(res.data);
     };
     fetchData();
-  }, [orderData]);
+  }, [orderData, refreshing]);
 
   return (
     <SafeAreaView style={styles.container}>

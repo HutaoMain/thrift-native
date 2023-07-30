@@ -38,6 +38,7 @@ const SearchBar = ({ onFilter }: SearchBarProps) => {
   const handleCategorySelect = (id: string | undefined) => {
     setSelectedCategoryId(id);
     onFilter(id, "");
+    setIsOpen(false);
   };
 
   const handleSearchKeywordChange = (searchKeyword: string) => {

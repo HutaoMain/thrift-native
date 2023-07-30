@@ -77,7 +77,7 @@ const Home = () => {
         }
       >
         {filteredData?.map((item, key) => (
-          <ProductCard product={item} key={key} />
+          <ProductCard product={item} key={key} refreshing={refreshing} />
         ))}
       </ScrollView>
     </SafeAreaView>

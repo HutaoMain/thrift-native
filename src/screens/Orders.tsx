@@ -72,7 +72,7 @@ const Orders = () => {
         }
       >
         {filteredOrders?.map((item, key) => (
-          <OrderCard key={key} order={item} />
+          <OrderCard key={key} order={item} refreshing={refreshing} />
         ))}
       </ScrollView>
       <TouchableOpacity style={styles.button} onPress={clearUser}>

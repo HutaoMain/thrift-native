@@ -10,9 +10,10 @@ import { API_URL } from "../../API_URL";
 
 interface Props {
   product: ProductInterface;
+  refreshing: boolean;
 }
 
-const ProductCard = ({ product }: Props) => {
+const ProductCard = ({ product, refreshing }: Props) => {
   const navigation = useNavigation<ProductStackProps["navigation"]>();
 
   const isFocused = useIsFocused();
@@ -39,7 +40,7 @@ const ProductCard = ({ product }: Props) => {
     if (isFocused) {
       fetchData();
     }
-  }, [isFocused]);
+  }, [isFocused, refreshing]);
 
   console.log(productRating);
 

@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
+  Linking,
 } from "react-native";
 import useCartStore from "../zustand/CartStore";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -122,6 +123,12 @@ const Cart = () => {
 
   const handlePaymentMethodChange = (itemValue: string) => {
     setSelectedPaymentMethod(itemValue);
+  };
+
+  const handleOpenFacebookPage = () => {
+    const facebookUrl =
+      "https://www.facebook.com/profile.php?id=100064852690903";
+    Linking.openURL(facebookUrl);
   };
 
   return (
@@ -260,10 +267,40 @@ const Cart = () => {
               height: "100%",
             }}
           >
+            {/* Add the series of instructions here */}
+            <Text style={styles.instructionText}>
+              How to Complete Your Payment Using GCash:
+            </Text>
             <Image
               source={require("../../assets/happy-thrift-qr.jpg")}
               style={styles.modalImage}
             />
+            <Text style={styles.instructionText}>1. Open the GCash app.</Text>
+            <Text style={styles.instructionText}>
+              2. Tap on 'Scan QR Code'.
+            </Text>
+            <Text style={styles.instructionText}>
+              3. Point your camera at the QR code.
+            </Text>
+            <Text style={styles.instructionText}>
+              4. Wait for the scan to complete.
+            </Text>
+            <Text style={styles.instructionText}>
+              5. Enter the price to complete the action.
+            </Text>
+
+            {/* Wrap the Facebook link in TouchableOpacity */}
+            <TouchableOpacity onPress={handleOpenFacebookPage}>
+              <Text style={styles.instructionText}>
+                6. Send your receipt to our Facebook page:
+                <Text
+                  style={{ color: "#0e74b2", textDecorationLine: "underline" }}
+                >
+                  https://www.facebook.com/profile.php?id=100064852690903
+                </Text>
+              </Text>
+            </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.closeButton}
               onPress={handleCloseModal}
@@ -390,5 +427,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#00205C",
     textAlign: "center",
+  },
+  instructionText: {
+    // Add your instruction text styles here
+    fontSize: 16,
+    marginBottom: 5,
   },
 });

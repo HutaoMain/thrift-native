@@ -79,6 +79,11 @@ export interface WishlistInterface {
   createdDate: string;
 }
 
+export interface QrCodeInterface {
+  id: string;
+  imageQrUrl: string;
+}
+
 // types
 export type StackNavigatorParamListType = {
   Home: undefined;

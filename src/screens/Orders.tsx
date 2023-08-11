@@ -15,12 +15,18 @@ import useAuthStore from "../zustand/AuthStore";
 import OrderCard from "../components/OrderCard";
 import { useState } from "react";
 import { API_URL } from "../../API_URL";
+import useNotificationCountStore from "../zustand/NotificationCountStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Orders = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [refreshing, setRefreshing] = useState(false);
 
   const clearUser = useAuthStore((state) => state.clearUser);
+
+  const setPendingOrderCount = useNotificationCountStore(
+    (item) => item.setPendingOrderCount
+  );
 
   const user = useAuthStore((state) => state.user);
 
@@ -37,6 +43,16 @@ const Orders = () => {
     setRefreshing(true);
     await refetch();
     setRefreshing(false);
+
+    const updatedPendingOrderCount =
+      filteredOrders?.filter((item) => item.status === "Pending").length || 0;
+
+    setPendingOrderCount(updatedPendingOrderCount);
+
+    await AsyncStorage.setItem(
+      "happy-thrift-pending-order-count",
+      updatedPendingOrderCount.toString()
+    );
   };
 
   const applyFilters = (order: OrderInterface) => {

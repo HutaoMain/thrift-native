@@ -13,6 +13,7 @@ import useCartStore from "../zustand/CartStore";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import {
+  QrCodeInterface,
   StackNavigatorParamListType,
   UserAddressInterface,
   UserInterface,
@@ -41,6 +42,7 @@ const Cart = () => {
   const [userData, setUserData] = useState<UserInterface>();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("gcash");
   const [imageModalVisible, setImageModalVisible] = useState<boolean>(false);
+  const [imageQrCode, setImageQrCode] = useState<QrCodeInterface[]>();
 
   const { data } = useQuery<UserAddressInterface>({
     queryKey: ["Address"],
@@ -49,6 +51,18 @@ const Cart = () => {
         .get(`${API_URL}/api/user-address/byEmail/${user}`)
         .then((res) => res.data),
   });
+
+  useEffect(() => {
+    try {
+      const fetch = async () => {
+        const res = await axios.get(`${API_URL}/api/qrcode/list`);
+        setImageQrCode(res.data);
+      };
+      fetch();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   useEffect(() => {
     try {
@@ -272,7 +286,8 @@ const Cart = () => {
               How to Complete Your Payment Using GCash:
             </Text>
             <Image
-              source={require("../../assets/happy-thrift-qr.jpg")}
+              // source={require("../../assets/happy-thrift-qr.jpg")}
+              source={{ uri: imageQrCode?.[0].imageQrUrl }}
               style={styles.modalImage}
             />
             <Text style={styles.instructionText}>1. Open the GCash app.</Text>

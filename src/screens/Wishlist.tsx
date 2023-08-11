@@ -6,10 +6,16 @@ import WishlistCard from "../components/WishlistCard";
 import useAuthStore from "../zustand/AuthStore";
 import { useQuery, useQueryClient } from "react-query";
 import { API_URL } from "../../API_URL";
+import useNotificationCountStore from "../zustand/NotificationCountStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Wishlist = () => {
   const user = useAuthStore((state) => state.user);
   const queryClient = useQueryClient();
+
+  const setWishlistCount = useNotificationCountStore(
+    (state) => state.setWishlistCount
+  );
 
   const { data, isFetching } = useQuery<ProductInterface[]>({
     queryKey: ["Wishlist"],
@@ -21,6 +27,15 @@ const Wishlist = () => {
 
   const handleRefresh = async () => {
     await queryClient.refetchQueries("Wishlist");
+
+    const wishlistCount = data?.length || 0;
+
+    setWishlistCount(wishlistCount);
+
+    await AsyncStorage.setItem(
+      "happy-thrift-wishlist-count",
+      wishlistCount.toString()
+    );
   };
 
   return (

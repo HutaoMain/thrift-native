@@ -14,8 +14,6 @@ interface Props {
 const OrderCard = ({ order, refreshing }: Props) => {
   const orderData = JSON.parse(order.orderJsonList);
 
-  console.log(order);
-
   const [productRating, setProductRating] = useState<number>();
 
   const user = useAuthStore((state) => state.user);

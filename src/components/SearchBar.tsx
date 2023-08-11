@@ -29,8 +29,6 @@ const SearchBar = ({ onFilter }: SearchBarProps) => {
       axios.get(`${API_URL}/api/category/list`).then((res) => res.data),
   });
 
-  console.log(selectedCategoryId);
-
   const handleFilterPress = () => {
     setIsOpen(!isOpen);
   };

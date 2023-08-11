@@ -42,8 +42,6 @@ const ProductCard = ({ product, refreshing }: Props) => {
     }
   }, [isFocused, refreshing]);
 
-  console.log(productRating);
-
   return (
     <Pressable style={styles.card} onPress={handleNavigate}>
       <Image source={{ uri: product.imageUrl?.[0] }} style={styles.image} />

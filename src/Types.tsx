@@ -54,6 +54,7 @@ export interface OrderInterface {
   status: string;
   modeOfPayment: string;
   dateNow: string;
+  proofPayment: string;
 }
 
 export interface OrderCardInterface {

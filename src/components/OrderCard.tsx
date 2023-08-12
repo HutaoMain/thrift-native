@@ -1,10 +1,19 @@
-import { View, SafeAreaView, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { OrderInterface } from "../Types";
 import { Rating } from "react-native-ratings";
 import useAuthStore from "../zustand/AuthStore";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { API_URL } from "../../API_URL";
+import * as ImagePicker from "expo-image-picker";
+import Toast from "react-native-toast-message";
 
 interface Props {
   order: OrderInterface;
@@ -15,6 +24,8 @@ const OrderCard = ({ order, refreshing }: Props) => {
   const orderData = JSON.parse(order.orderJsonList);
 
   const [productRating, setProductRating] = useState<number>();
+  const [imageBase64, setImageBase64] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   const user = useAuthStore((state) => state.user);
 
@@ -41,6 +52,69 @@ const OrderCard = ({ order, refreshing }: Props) => {
     };
     fetchData();
   }, [orderData, refreshing]);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      let base64Img = `data:image/jpg;base64,${result.assets?.[0].base64}`;
+
+      setImageBase64(base64Img);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    try {
+      if (!imageBase64) {
+        console.error("No image selected");
+        return;
+      }
+
+      let data = {
+        file: imageBase64,
+        upload_preset: "upload",
+      };
+
+      fetch("https://api.cloudinary.com/v1_1/alialcantara/image/upload", {
+        body: JSON.stringify(data),
+        headers: {
+          "content-type": "application/json",
+        },
+        method: "POST",
+      })
+        .then(async (r) => {
+          let data = await r.json();
+          setImageUrl(data.secure_url);
+          return data.secure_url;
+        })
+        .catch((err) => console.log(err));
+
+      console.log(imageUrl);
+
+      console.log(orderData[0]?.id);
+
+      setTimeout(async () => {
+        await axios.put(
+          `${API_URL}/api/order/update/proofPayment/${order.id}`,
+          {
+            proofPayment: imageUrl,
+          }
+        );
+      }, 1000);
+
+      Toast.show({
+        type: "success",
+        text1: "Successfully upload your receipt.",
+      });
+      setImageBase64("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -81,6 +155,47 @@ const OrderCard = ({ order, refreshing }: Props) => {
           }}
         />
       </View>
+
+      {imageBase64 ? (
+        <>
+          <Image
+            source={
+              imageBase64
+                ? { uri: imageBase64 }
+                : {
+                    uri: "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg",
+                  }
+            }
+            style={{ width: 100, height: 100 }}
+          />
+          <TouchableOpacity
+            onPress={handleImageUpload}
+            style={styles.uploadButton}
+          >
+            <Text style={styles.uploadButtonText}>Submit Receipt</Text>
+          </TouchableOpacity>
+        </>
+      ) : order.proofPayment ? (
+        <Text
+          style={{
+            textAlign: "center",
+            paddingTop: 20,
+            fontWeight: "bold",
+          }}
+        >
+          Done uploading receipt
+        </Text>
+      ) : (
+        <TouchableOpacity
+          // onPress={fileTypeChecking}
+          onPress={() => pickImage()}
+          style={styles.uploadButton}
+        >
+          <Text style={styles.uploadButtonText}>
+            Upload the image of category here...
+          </Text>
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 };
@@ -122,5 +237,17 @@ const styles = StyleSheet.create({
   },
   quantity: {
     fontSize: 16,
+  },
+  uploadButton: {
+    marginTop: 10,
+    backgroundColor: "#007AFF",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  uploadButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
